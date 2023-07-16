@@ -9,7 +9,7 @@ public class MenuLoader : MonoBehaviour
 
     private void Start()
     {
-        fadeGroup = GetComponent<CanvasGroup>();
+        fadeGroup = FindObjectOfType<CanvasGroup>();
         fadeGroup.alpha = 1.0f;
     }
 
@@ -17,4 +17,17 @@ public class MenuLoader : MonoBehaviour
     {
         fadeGroup.alpha = 1 - Time.timeSinceLevelLoad * fadeInSpeed;
     }
+
+    //Main Menu Buttons
+    public void OnPlayClick()
+    {
+        Debug.Log("Play Button is clicked");
+    }
+
+    public void OnShopClick()
+    {
+        Debug.Log("Shop Button is clicked");
+    }
+
+
 }
