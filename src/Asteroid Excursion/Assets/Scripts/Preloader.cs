@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Preloader : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class Preloader : MonoBehaviour
             fadeGroup.alpha = Time.time - minLogoTime;
             if (fadeGroup.alpha >= 1)
             {
-                Debug.Log("Change the scnene");
+                SceneManager.LoadScene("MainMenu");
             }
         }
     }
