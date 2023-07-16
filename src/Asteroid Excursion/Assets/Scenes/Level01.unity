@@ -351,7 +351,7 @@ MonoBehaviour:
   spaceShip: {fileID: 106362052}
   spaceShipDefaultVelocity_X: 0
   spaceShipDefaultVelocity_Y: 0
-  spaceShipDefaultVelocity_Z: 0
+  spaceShipDefaultVelocity_Z: 100
   isLandscape: 1
 --- !u!1 &135320481
 GameObject:
@@ -440,7 +440,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 135320481}
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 3.3, y: 2, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -499,7 +499,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 47.68524
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

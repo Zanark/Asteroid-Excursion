@@ -13,7 +13,6 @@ public class SpaceShipMovement : MonoBehaviour
     private void Start()
     {
         spaceShip.useGravity = false;
-        spaceShip.AddForce(spaceShipDefaultVelocity_X * Time.deltaTime, spaceShipDefaultVelocity_Y * Time.deltaTime, spaceShipDefaultVelocity_Z * Time.deltaTime);
     }
 
     private void Update()
@@ -23,6 +22,7 @@ public class SpaceShipMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        spaceShip.AddForce(spaceShipDefaultVelocity_X * Time.deltaTime, spaceShipDefaultVelocity_Y * Time.deltaTime, spaceShipDefaultVelocity_Z * Time.deltaTime);
         if (isLandscape)
         {
             tilt = Quaternion.Euler(90, 0, 0) * tilt;
