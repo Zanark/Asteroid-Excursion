@@ -7,7 +7,7 @@ public class Preloader : MonoBehaviour
 {
     private CanvasGroup fadeGroup;
     private float loadTime;
-    private float minLogoTime = 3.0f;
+    private float logoStartTime = 3.0f;
 
     private void Start()
     {
@@ -16,24 +16,24 @@ public class Preloader : MonoBehaviour
 
         //Pre load the game
 
-        if (Time.time < minLogoTime)
-            loadTime = minLogoTime;
+        if (Time.time < logoStartTime)
+            loadTime = logoStartTime;
         else
-            loadTime = Time.time;
+            loadTime = Time.time; //This case is just a fail safe
     }
 
     private void Update()
     {
-        //Fade-in
-        if (Time.time < minLogoTime)
+        //LOGO Fade-in
+        if (Time.time < logoStartTime)
         {
             fadeGroup.alpha = 1.0f - Time.time;
         }
 
-        //Fade-out
-        if (Time.time > minLogoTime && loadTime!= 0)
+        //LOGO Fade-out
+        if (Time.time > logoStartTime)
         {
-            fadeGroup.alpha = Time.time - minLogoTime;
+            fadeGroup.alpha = Time.time - logoStartTime;
             if (fadeGroup.alpha >= 1)
             {
                 SceneManager.LoadScene("MainMenu");
