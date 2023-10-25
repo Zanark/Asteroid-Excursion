@@ -14,16 +14,25 @@ public class SaveState
     [XmlElement("trailOwned")]
     public int trailOwned;
 
+    [XmlElement("activeColor")]
+    public int activeColor;
+
+    [XmlElement("activeTrail")]
+    public int activeTrail;
+
     [XmlElement("currency")]
     public int currency;
 
     [XmlElement("completedLevel")]
     public int completedLevel;
+
     public SaveState()
     {
         colorOwned = 0;
         trailOwned = 0;
         currency = 0;
         completedLevel = 0;
+        activeColor = 0;
+        activeTrail = 0;
     }
 }

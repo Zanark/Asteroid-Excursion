@@ -8,17 +8,17 @@ public class SaveManager : MonoBehaviour
 
     private void Awake()
     {
-        ResetSave();
+        //ResetSave();
         DontDestroyOnLoad(gameObject);
         Instance = this;
         Load();
 
-        Debug.Log(Helper.Serialize<SaveState>(state));
+        Debug.Log(Helper.Serialize(state));
     }
 
     public void Save()
     {
-        PlayerPrefs.SetString("save", Helper.Serialize<SaveState>(state));
+        PlayerPrefs.SetString("save", Helper.Serialize(state));
     }
 
     public void Load()
@@ -37,12 +37,26 @@ public class SaveManager : MonoBehaviour
 
     public bool isColorOwned(int index)
     {
-        return(state.colorOwned & (1 << index)) != 0;
+        if(index <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return (state.colorOwned & (1 << index)) != 0;
+        }
     }
 
     public bool isTrailOwned(int index)
     {
-        return (state.trailOwned & (1 << index)) != 0;
+        if(index <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return (state.trailOwned & (1 << index)) != 0;
+        }
     }
 
     public void UnlockColor(int index)

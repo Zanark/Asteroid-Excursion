@@ -3,19 +3,19 @@ using System.Xml.Serialization;
 
 public static class Helper
 {
-    //Serialize
+    // Serialize
     public static string Serialize<T>(this T toSerialize)
     {
-        XmlSerializer xml = new XmlSerializer(toSerialize.GetType());
+        XmlSerializer xml = new XmlSerializer(typeof(T)); // Pass typeof(T) as the type parameter
         StringWriter writer = new StringWriter();
         xml.Serialize(writer, toSerialize);
         return writer.ToString();
     }
 
-    //Deserialize
+    // Deserialize
     public static T Deserialize<T>(this string toDeserialize)
     {
-        XmlSerializer xml = new XmlSerializer(toDeserialize.GetType());
+        XmlSerializer xml = new XmlSerializer(typeof(T)); // Pass typeof(T) as the type parameter
         StringReader reader = new StringReader(toDeserialize);
         return (T)xml.Deserialize(reader);
     }

@@ -9,6 +9,7 @@ public class MenuLoader : MonoBehaviour
 {
     private CanvasGroup fadeGroup;
     private float fadeInSpeed = 0.2f;
+    private float selectedScale = 1.8f;
 
     public RectTransform menuContainer;
     public Transform levelPanel;
@@ -18,16 +19,22 @@ public class MenuLoader : MonoBehaviour
 
     public TextMeshProUGUI colorBuySetText;
     public TextMeshProUGUI trailBuySetText;
+    public TextMeshProUGUI currencyText;
 
     private int[] colorCost = new int[] { 0, 5, 5, 5, 10, 10, 10, 15, 15, 20 };
     private int[] trailCost = new int[] { 0, 20, 40, 40, 60, 60, 80, 80, 100, 100 };
     private int selectedColorIndex;
     private int selectedTrailIndex;
+    private int activeColorIndex;
+    private int activeTrailIndex;
 
     private Vector3 desiredMenuPosition;
 
     private void Start()
     {
+        //Temporary Currency for testing
+        SaveManager.Instance.state.currency = 999;
+        
         fadeGroup = FindObjectOfType<CanvasGroup>();
         fadeGroup.alpha = 1.0f;
 
@@ -36,6 +43,9 @@ public class MenuLoader : MonoBehaviour
 
         //Add buttons on click events
         InitLevel();
+
+        //Update Currency
+        UpdateCurrencyText();
     }
 
     private void Update()
@@ -54,18 +64,43 @@ public class MenuLoader : MonoBehaviour
         foreach (Transform t in colorPanel)
         {
             int currentIndex = i;
+            
+            //Add listeners to Buttons
             Button b = t.GetComponent<Button>();
             b.onClick.AddListener(() => OnColorSelect(currentIndex));
+            
+            //Update owned/not owned colors
+            Image img = t.GetComponent<Image>();
+            img.color = SaveManager.Instance.isColorOwned(i) ? Color.white : new Color(0.3f, 0.3f, 0.3f);
+
             i++;
         }
         i = 0;
         foreach (Transform t in trailPanel)
         {
             int currentIndex = i;
+            
+            //Add listeners to Buttons
             Button b = t.GetComponent<Button>();
             b.onClick.AddListener(() => OnTrailSelect(currentIndex));
+
+            //Update owned/not owned trails
+            Image img = t.GetComponent<Image>();
+            img.color = SaveManager.Instance.isTrailOwned(i) ? Color.white : new Color(0.3f, 0.3f, 0.3f);
+
             i++;
         }
+
+        //Set player prefs
+        OnColorSelect(SaveManager.Instance.state.activeColor);
+        SetColor(SaveManager.Instance.state.activeColor);
+        colorPanel.GetChild(SaveManager.Instance.state.activeColor).GetComponent<RectTransform>().localScale = Vector3.one * selectedScale;
+        colorPanel.GetChild(SaveManager.Instance.state.activeColor).GetComponent<Image>().color = Color.white;
+
+        OnTrailSelect(SaveManager.Instance.state.activeTrail);
+        SetTrail(SaveManager.Instance.state.activeTrail);
+        trailPanel.GetChild(SaveManager.Instance.state.activeTrail).GetComponent<RectTransform>().localScale = Vector3.one * selectedScale;
+        trailPanel.GetChild(SaveManager.Instance.state.activeTrail).GetComponent<Image>().color = Color.white;
     }
 
     private void InitLevel()
@@ -103,11 +138,15 @@ public class MenuLoader : MonoBehaviour
     private void SetColor(int index)
     {
         colorBuySetText.text = "Current";
+        SaveManager.Instance.state.activeColor = activeColorIndex = index;
+        SaveManager.Instance.Save();
     }
 
     private void SetTrail(int index)
     {
         trailBuySetText.text = "Current";
+        SaveManager.Instance.state.activeTrail = activeTrailIndex = index;
+        SaveManager.Instance.Save();
     }   
 
     //Main Menu Buttons
@@ -134,10 +173,20 @@ public class MenuLoader : MonoBehaviour
     {
         Debug.Log("You have selected color number : " + currentIndex);
 
+        if(selectedColorIndex == currentIndex)
+            return;
+
+        //Change size of selectd and unselected color
+        colorPanel.GetChild(currentIndex).GetComponent<RectTransform>().localScale = Vector3.one * selectedScale;
+        colorPanel.GetChild(selectedColorIndex).GetComponent<RectTransform>().localScale = Vector3.one;
+
         selectedColorIndex = currentIndex;
         if(SaveManager.Instance.isColorOwned(currentIndex))
         {
-            colorBuySetText.text = "Select";
+            if (activeColorIndex == currentIndex)
+                colorBuySetText.text = "Current";
+            else
+                colorBuySetText.text = "Select";
         }
         else
         {
@@ -149,10 +198,20 @@ public class MenuLoader : MonoBehaviour
     {
         Debug.Log("You have selected trail number : " + currentIndex);
 
+        if (selectedTrailIndex == currentIndex)
+            return;
+
+        //Change size of selectd and unselected color
+        trailPanel.GetChild(currentIndex).GetComponent<RectTransform>().localScale = Vector3.one * selectedScale;
+        trailPanel.GetChild(selectedTrailIndex).GetComponent<RectTransform>().localScale = Vector3.one;
+
         selectedTrailIndex = currentIndex;
         if (SaveManager.Instance.isTrailOwned(currentIndex))
         {
-            trailBuySetText.text = "Select";
+            if (activeTrailIndex == currentIndex)
+                trailBuySetText.text = "Current";
+            else
+                trailBuySetText.text = "Select";
         }
         else
         {
@@ -173,6 +232,8 @@ public class MenuLoader : MonoBehaviour
             if(SaveManager.Instance.BuyColor(selectedColorIndex, colorCost[selectedColorIndex]))
             {
                 SetColor(selectedColorIndex);
+                colorPanel.GetChild(selectedColorIndex).GetComponent<Image>().color = Color.white;
+                UpdateCurrencyText();
             }
             else
             {
@@ -194,6 +255,8 @@ public class MenuLoader : MonoBehaviour
             if (SaveManager.Instance.BuyTrail(selectedTrailIndex, trailCost[selectedTrailIndex]))
             {
                 SetTrail(selectedTrailIndex);
+                trailPanel.GetChild(selectedTrailIndex).GetComponent<Image>().color = Color.white;
+                UpdateCurrencyText();
             }
             else
             {
@@ -202,8 +265,12 @@ public class MenuLoader : MonoBehaviour
         }
     }
 
-    //Level Menu Buttons
+    private void UpdateCurrencyText()
+    {
+        currencyText.text = SaveManager.Instance.state.currency.ToString();
+    }   
 
+    //Level Menu Buttons
     private void OnLevelSelect(int currentIndex)
     {
         Debug.Log("You have selected level number : " + currentIndex);
