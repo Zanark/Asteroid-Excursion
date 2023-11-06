@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class MenuLoader : MonoBehaviour
 {
@@ -34,7 +35,10 @@ public class MenuLoader : MonoBehaviour
     {
         //Temporary Currency for testing
         SaveManager.Instance.state.currency = 999;
-        
+
+        //Position the camera to the desired menu
+        SetCameraTo(Manager.Instance.menuFocus);
+
         fadeGroup = FindObjectOfType<CanvasGroup>();
         fadeGroup.alpha = 1.0f;
 
@@ -114,10 +118,37 @@ public class MenuLoader : MonoBehaviour
             int currentIndex = i;
             Button b = t.GetComponent<Button>();
             b.onClick.AddListener(() => OnLevelSelect(currentIndex));
+            
+            Image img = t.GetComponent<Image>();
+            
+            if (i <= SaveManager.Instance.state.completedLevel)
+            {
+                if (i == SaveManager.Instance.state.completedLevel)
+                {
+                    img.color = Color.white;
+                }
+                else
+                {
+                    img.color = Color.magenta;
+                }
+            }
+            else
+            {
+                b.interactable = false;
+                img.color = Color.grey;
+
+            }
+            
             i++;
         }
     }
 
+    private void SetCameraTo(int menuIndex)
+    {
+        NavigateTo(menuIndex);
+        menuContainer.anchoredPosition3D = desiredMenuPosition;
+    }
+    
     private void NavigateTo(int menuIndex)
     {
         switch (menuIndex)
@@ -273,6 +304,8 @@ public class MenuLoader : MonoBehaviour
     //Level Menu Buttons
     private void OnLevelSelect(int currentIndex)
     {
+        Manager.Instance.currentLevel = currentIndex;
+        SceneManager.LoadScene("Game");
         Debug.Log("You have selected level number : " + currentIndex);
     }
 }
