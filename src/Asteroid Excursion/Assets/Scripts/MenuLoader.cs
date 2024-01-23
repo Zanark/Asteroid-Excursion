@@ -22,6 +22,8 @@ public class MenuLoader : MonoBehaviour
     public TextMeshProUGUI trailBuySetText;
     public TextMeshProUGUI currencyText;
 
+    private MenuCamera menuCam;
+
     private int[] colorCost = new int[] { 0, 5, 5, 5, 10, 10, 10, 15, 15, 20 };
     private int[] trailCost = new int[] { 0, 20, 40, 40, 60, 60, 80, 80, 100, 100 };
     private int selectedColorIndex;
@@ -38,6 +40,8 @@ public class MenuLoader : MonoBehaviour
 
     private void Start()
     {
+        menuCam = FindObjectOfType<MenuCamera>();
+        
         //Temporary Currency for testing
         SaveManager.Instance.state.currency = 999;
 
@@ -181,12 +185,15 @@ public class MenuLoader : MonoBehaviour
             default:
             case 0: //Main Menu
                 desiredMenuPosition = Vector3.zero;
+                menuCam.BackToMainMenu();
                 break;
             case 1: //Play Menu
                 desiredMenuPosition = Vector3.right * 1920;
+                menuCam.MoveToLevel();
                 break;
             case 2: //Shop Menu
                 desiredMenuPosition = Vector3.left * 1920;
+                menuCam.MoveToShop();
                 break;
         }
     }
