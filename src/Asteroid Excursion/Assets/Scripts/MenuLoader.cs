@@ -104,7 +104,7 @@ public class MenuLoader : MonoBehaviour
             
             //Update owned/not owned colors
             Image img = t.GetComponent<Image>();
-            img.color = SaveManager.Instance.isColorOwned(i) ? Color.white : new Color(0.3f, 0.3f, 0.3f);
+            img.color = SaveManager.Instance.isColorOwned(i) ? Manager.Instance.playerColor[currentIndex] : Color.Lerp(Manager.Instance.playerColor[currentIndex], new Color(0,0,0,1), 0.25f);
 
             i++;
         }
@@ -202,6 +202,7 @@ public class MenuLoader : MonoBehaviour
     {
         colorBuySetText.text = "Current";
         SaveManager.Instance.state.activeColor = activeColorIndex = index;
+        Manager.Instance.playerMaterial.color = Manager.Instance.playerColor[index];
         SaveManager.Instance.Save();
     }
 
@@ -295,7 +296,7 @@ public class MenuLoader : MonoBehaviour
             if(SaveManager.Instance.BuyColor(selectedColorIndex, colorCost[selectedColorIndex]))
             {
                 SetColor(selectedColorIndex);
-                colorPanel.GetChild(selectedColorIndex).GetComponent<Image>().color = Color.white;
+                colorPanel.GetChild(selectedColorIndex).GetComponent<Image>().color = Manager.Instance.playerColor[selectedColorIndex];
                 UpdateCurrencyText();
             }
             else
