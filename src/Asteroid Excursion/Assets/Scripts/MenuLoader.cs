@@ -22,6 +22,10 @@ public class MenuLoader : MonoBehaviour
     public TextMeshProUGUI trailBuySetText;
     public TextMeshProUGUI currencyText;
 
+    public Button tiltControlButton;
+    public Color tiltControlEnabled;
+    public Color tiltControlDisabled;
+
     private MenuCamera menuCam;
 
     private int[] colorCost = new int[] { 0, 5, 5, 5, 10, 10, 10, 15, 15, 20 };
@@ -32,6 +36,7 @@ public class MenuLoader : MonoBehaviour
     private int activeTrailIndex;
 
     private Vector3 desiredMenuPosition;
+    private GameObject currentTrail;
 
     public AnimationCurve enteringLevelZoomCurve;
     private bool isEnteringLevel = false;
@@ -59,6 +64,15 @@ public class MenuLoader : MonoBehaviour
 
         //Update Currency
         UpdateCurrencyText();
+
+        if (SystemInfo.supportsAccelerometer)
+        {
+            tiltControlButton.GetComponent<Image>().color = (SaveManager.Instance.state.usingAccelerometer) ? tiltControlEnabled : tiltControlDisabled;
+        }
+        else
+        {
+            tiltControlButton.gameObject.SetActive(false);
+        }
     }
 
     private void Update()
@@ -210,6 +224,17 @@ public class MenuLoader : MonoBehaviour
     {
         trailBuySetText.text = "Current";
         SaveManager.Instance.state.activeTrail = activeTrailIndex = index;
+
+        if (currentTrail != null)
+            Destroy(currentTrail);
+
+        currentTrail = Instantiate(Manager.Instance.playerTrails[index]) as GameObject;
+        currentTrail.transform.SetParent(FindObjectOfType<MenuPlayer>().transform);
+
+        currentTrail.transform.localPosition = Vector3.zero;
+        currentTrail.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+        currentTrail.transform.localScale = Vector3.one * 0.01f;
+
         SaveManager.Instance.Save();
     }   
 
@@ -340,5 +365,11 @@ public class MenuLoader : MonoBehaviour
         Manager.Instance.currentLevel = currentIndex;
         isEnteringLevel = true;
         Debug.Log("You have selected level number : " + currentIndex);
+    }
+
+    public void OnTiltControlClick()
+    {
+        SaveManager.Instance.state.usingAccelerometer = !SaveManager.Instance.state.usingAccelerometer;
+        SaveManager.Instance.Save();
     }
 }

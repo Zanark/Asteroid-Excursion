@@ -14,6 +14,12 @@ public class SaveManager : MonoBehaviour
         Load();
 
         Debug.Log(Helper.Serialize(state));
+
+        if(state.usingAccelerometer && !SystemInfo.supportsAccelerometer)
+        {
+            state.usingAccelerometer = false;
+            Save();
+        }
     }
 
     public void Save()

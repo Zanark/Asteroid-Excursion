@@ -26,6 +26,9 @@ public class SaveState
     [XmlElement("completedLevel")]
     public int completedLevel;
 
+    [XmlElement("usingAccelerometer")]
+    public bool usingAccelerometer;
+
     public SaveState()
     {
         colorOwned = 0;
@@ -34,5 +37,6 @@ public class SaveState
         completedLevel = 0;
         activeColor = 0;
         activeTrail = 0;
+        usingAccelerometer = true;
     }
 }
